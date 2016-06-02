@@ -7,6 +7,7 @@ var eventStream = require('event-stream');
 
 // Gulp plugins
 var autoprefixer = require('gulp-autoprefixer');
+var babel = require('gulp-babel');
 var concat = require('gulp-concat');
 var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
@@ -52,26 +53,15 @@ gulp.task('js', function () {
     './public/javascript/src/**/*.js'
   ])
     .pipe(sourcemaps.init())
+    .pipe(babel({
+      presets: ['es2015']
+    }))
     .pipe(concat('main.js'))
     .pipe(uglify())
     .pipe(sourcemaps.write('./../maps'))
     .pipe(gulp.dest('./public/javascript/dist'));
 
   return eventStream.merge(libraryStream, ourStream);
-  //
-  //
-  //
-  // return gulp.src([
-  //     './public/bower_components/jquery/dist/jquery.min.js',
-  //     './public/bower_components/bootstrap-sass/assets/javascripts/bootstrap.min.js',
-  //     './public/bower_components/angular/angular.min.js',
-  //     './public/javascript/src/**/*.js'
-  //   ])
-  //   .pipe(sourcemaps.init())
-  //   .pipe(concat('main.js'))
-  //   .pipe(uglify())
-  //   .pipe(sourcemaps.write('./../maps'))
-  //   .pipe(gulp.dest('./public/javascript/dist'));
 });
 
 gulp.task('js:watch', function () {
