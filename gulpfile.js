@@ -22,7 +22,9 @@ gulp.task('watch', ['css:watch', 'js:watch']);
 gulp.task('css', function () {
   return gulp.src('./public/css/sass/**/*.scss')
     .pipe(sourcemaps.init())
-    .pipe(sass().on('error', sass.logError))
+    .pipe(sass({
+      outputStyle: 'compressed'
+    }).on('error', sass.logError))
     .pipe(autoprefixer({
       browsers: ['last 2 versions'],
       cascade: false
