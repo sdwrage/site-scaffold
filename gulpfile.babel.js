@@ -1,69 +1,71 @@
-/*jshint node: true, -W097*/
+/*jshint esversion: 6, node: true*/
 
 'use strict';
 
-var gulp = require('gulp');
-var eventStream = require('event-stream');
+import eventStream from 'event-stream';
+import gulp from 'gulp';
+import gulpAutoprefixer from 'gulp-autoprefixer';
+import gulpBabel from 'gulp-babel';
+import gulpConcat from 'gulp-concat';
+import gulpSass from 'gulp-sass';
+import gulpSourcemaps from 'gulp-sourcemaps';
+import gulpUglify from 'gulp-uglify';
 
-// Gulp plugins
-var autoprefixer = require('gulp-autoprefixer');
-var babel = require('gulp-babel');
-var concat = require('gulp-concat');
-var sass = require('gulp-sass');
-var sourcemaps = require('gulp-sourcemaps');
-var uglify = require('gulp-uglify');
+gulp.task('default', ['js:backend', 'js:frontend', 'sass']);
 
-// Default task
-gulp.task('default', ['css', 'js']);
-
-// Watch task
-gulp.task('watch', ['css:watch', 'js:watch']);
-
-// CSS
-gulp.task('css', function () {
-  return gulp.src('./public/css/sass/**/*.scss')
-    .pipe(sourcemaps.init())
-    .pipe(sass({
-      outputStyle: 'compressed'
-    }).on('error', sass.logError))
-    .pipe(autoprefixer({
-      browsers: ['last 2 versions'],
-      cascade: false
-    }))
-    .pipe(sourcemaps.write('./../maps'))
-    .pipe(gulp.dest('./public/css/dist'));
-});
-
-gulp.task('css:watch', function () {
-  gulp.watch('./public/css/sass/**/*.scss', ['css']);
-});
-
-// JavaScript
-gulp.task('js', function () {
-
-  var libraryStream = gulp.src([
-      './public/bower_components/jquery/dist/jquery.min.js',
-      './public/bower_components/bootstrap-sass/assets/javascripts/bootstrap.min.js',
-      './public/bower_components/angular/angular.min.js'
-    ])
-    .pipe(concat('libs.js'))
-    .pipe(gulp.dest('./public/javascript/dist'));
-
-  var ourStream = gulp.src([
-    './public/javascript/src/**/*.js'
-  ])
-    .pipe(sourcemaps.init())
-    .pipe(babel({
+gulp.task('js:backend', () => {
+  return gulp.src('backend/src/**/*.js')
+    .pipe(gulpBabel({
       presets: ['es2015']
     }))
-    .pipe(concat('main.js'))
-    .pipe(uglify())
-    .pipe(sourcemaps.write('./../maps'))
-    .pipe(gulp.dest('./public/javascript/dist'));
-
-  return eventStream.merge(libraryStream, ourStream);
+    .pipe(gulp.dest('backend/build/'));
 });
 
-gulp.task('js:watch', function () {
-  gulp.watch('./public/javascript/src/**/*.js', ['js']);
+gulp.task('js:frontend', () => {
+  let frontendLibrariesStream = gulp.src([
+    'bower_components/jquery/dist/jquery.min.js',
+    'bower_components/bootstrap-sass/assets/javascripts/bootstrap.min.js',
+    'bower_components/angular/angular.min.js'
+  ]);
+
+  let frontendStream = gulp.src([
+    'frontend/scripts/**/*.js'
+  ])
+    .pipe(gulpSourcemaps.init())
+    .pipe(gulpBabel({
+      presets: ['es2015']
+    }))
+    .pipe(gulpUglify());
+
+  return eventStream.merge(frontendLibrariesStream, frontendStream)
+    .pipe(gulpConcat('main.js'))
+    .pipe(gulpSourcemaps.write('.'))
+    .pipe(gulp.dest('public/scripts'));
+});
+
+gulp.task('sass', () => {
+  return gulp.src('frontend/sass/**/*.scss')
+    .pipe(gulpSourcemaps.init())
+    .pipe(gulpSass({
+      outputStyle: 'compressed'
+    }).on('error', gulpSass.logError))
+    .pipe(gulpAutoprefixer({
+      browsers: ['last 2 versions']
+    }))
+    .pipe(gulpSourcemaps.write('.'))
+    .pipe(gulp.dest('public/styles'));
+});
+
+gulp.task('watch', ['js:backend:watch', 'js:frontend:watch', 'sass:watch']);
+
+gulp.task('js:backend:watch', () => {
+  gulp.watch('backend/src/**/*.js', ['js:backend']);
+});
+
+gulp.task('js:frontend:watch', () => {
+  gulp.watch('frontend/scripts/**/*.js', ['js:frontend']);
+});
+
+gulp.task('sass:watch', () => {
+  gulp.watch('frontend/sass/**/*.scss', ['sass']);
 });
