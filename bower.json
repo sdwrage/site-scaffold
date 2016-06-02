@@ -1,11 +1,11 @@
 {
-  "name": "ease-node",
-  "description": "A port of EASE to NodeJS.",
+  "name": "site-scaffold",
+  "description": "A scaffold for a site.",
   "main": "index.js",
   "authors": [
     "Daniel Del Rio <ddelrio1986@gmail.com>"
   ],
-  "license": "UNLICENSED",
+  "license": "MIT",
   "homepage": "http://www.google.com",
   "ignore": [
     "**/.*",

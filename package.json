@@ -1,7 +1,7 @@
 {
-  "name": "ease-node",
+  "name": "site-scaffold",
   "version": "1.0.0",
-  "description": "A port of EASE to NodeJS.",
+  "description": "A scaffold for a site.",
   "main": "index.js",
   "scripts": {
     "start": "nodemon backend/build/app",
@@ -9,7 +9,7 @@
   },
   "author": "Daniel Del Rio <ddelrio1986@gmail.com>",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "dependencies": {
     "express": "^4.13.4"
   },
