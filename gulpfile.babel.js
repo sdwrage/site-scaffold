@@ -7,6 +7,8 @@ import gulp from 'gulp';
 import gulpAutoprefixer from 'gulp-autoprefixer';
 import gulpBabel from 'gulp-babel';
 import gulpConcat from 'gulp-concat';
+import gulpIife from 'gulp-iife';
+import gulpOrder from 'gulp-order';
 import gulpSass from 'gulp-sass';
 import gulpSourcemaps from 'gulp-sourcemaps';
 import gulpUglify from 'gulp-uglify';
@@ -22,22 +24,30 @@ gulp.task('js:backend', () => {
 });
 
 gulp.task('js:frontend', () => {
-  let frontendLibrariesStream = gulp.src([
+  let libraryFiles = [
     'bower_components/jquery/dist/jquery.min.js',
     'bower_components/bootstrap-sass/assets/javascripts/bootstrap.min.js',
     'bower_components/angular/angular.min.js'
-  ]);
+  ];
 
-  let frontendStream = gulp.src([
-    'frontend/scripts/**/*.js'
-  ])
+  let ourFiles = [
+    'frontend/scripts/app.js'
+  ];
+
+  let librariesStream = gulp.src(libraryFiles);
+
+  let myStream = gulp.src(ourFiles)
     .pipe(gulpSourcemaps.init())
     .pipe(gulpBabel({
       presets: ['es2015']
     }))
-    .pipe(gulpUglify());
+    .pipe(gulpUglify())
+    .pipe(gulpIife());
 
-  return eventStream.merge(frontendLibrariesStream, frontendStream)
+  return eventStream.merge(librariesStream, myStream)
+    .pipe(gulpOrder(libraryFiles.concat(ourFiles), {
+      base: '.'
+    }))
     .pipe(gulpConcat('main.js'))
     .pipe(gulpSourcemaps.write('.'))
     .pipe(gulp.dest('public/scripts'));

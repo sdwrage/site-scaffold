@@ -1,12 +1,12 @@
 {
   "name": "ease-node",
-  "description": "",
+  "description": "A port of EASE to NodeJS.",
   "main": "index.js",
   "authors": [
     "Daniel Del Rio <ddelrio1986@gmail.com>"
   ],
-  "license": "ISC",
-  "homepage": "",
+  "license": "UNLICENSED",
+  "homepage": "http://www.google.com",
   "ignore": [
     "**/.*",
     "node_modules",
