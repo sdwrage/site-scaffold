@@ -1,0 +1,1 @@
+{"version":3,"sources":["app.js"],"names":["angular","module","controller"],"mappings":"AAAAA,QAAAC,OAAA,gBACAC,WAAA,YAAA","file":"main.js","sourcesContent":["angular.module('ease-node', [])\n  .controller('MainCtrl', [function () {\n  }]);\n"],"sourceRoot":"/source/"}
